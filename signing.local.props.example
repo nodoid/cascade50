@@ -1,0 +1,16 @@
+<Project>
+  <!--
+    Local signing and store identities, kept out of git. Copy this file to signing.local.props and fill
+    in your own values; Directory.Build.props imports it, and the tools/ scripts read it.
+  -->
+  <PropertyGroup>
+    <!-- Keychain identities (security find-identity -v -p codesigning). -->
+    <Cascade50DevSigningKey>Apple Development: Your Name (XXXXXXXXXX)</Cascade50DevSigningKey>
+    <Cascade50DistSigningKey>Apple Distribution: Your Name (TEAMID)</Cascade50DistSigningKey>
+    <Cascade50InstallerSigningKey>3rd Party Mac Developer Installer: Your Name (TEAMID)</Cascade50InstallerSigningKey>
+    <!-- Microsoft Partner Center > Product identity. -->
+    <Cascade50StoreIdentity>12345Publisher.cascade50</Cascade50StoreIdentity>
+    <Cascade50StorePublisher>CN=00000000-0000-0000-0000-000000000000</Cascade50StorePublisher>
+    <Cascade50StoreDisplayName>cascade50</Cascade50StoreDisplayName>
+  </PropertyGroup>
+</Project>

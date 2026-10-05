@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Shown while the game starts: the logo on black, full screen. -->
+  <style name="Theme.Splash" parent="android:Theme.Material.NoActionBar.Fullscreen">
+    <item name="android:windowBackground">@drawable/splash_screen</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowFullscreen">true</item>
+  </style>
+  <style name="MainTheme" parent="android:Theme.Material.NoActionBar.Fullscreen" />
+</resources>

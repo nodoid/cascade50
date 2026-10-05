@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <!-- Android 12+: the system splash shows the app icon on black, then the game's own title appears. -->
+  <style name="Theme.Splash" parent="android:Theme.Material.NoActionBar.Fullscreen">
+    <item name="android:windowSplashScreenBackground">@color/splash_background</item>
+    <item name="android:windowSplashScreenAnimatedIcon">@mipmap/icon_foreground</item>
+    <item name="android:windowSplashScreenIconBackgroundColor">@color/ic_launcher_background</item>
+    <item name="android:windowBackground">@drawable/splash_screen</item>
+    <item name="android:windowNoTitle">true</item>
+    <item name="android:windowFullscreen">true</item>
+    <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+  </style>
+  <style name="MainTheme" parent="android:Theme.Material.NoActionBar.Fullscreen" />
+</resources>

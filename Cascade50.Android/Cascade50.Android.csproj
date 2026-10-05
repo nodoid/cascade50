@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0-android</TargetFramework>
+    <SupportedOSPlatformVersion>23</SupportedOSPlatformVersion>
+    <ApplicationId>uk.co.allthejohnsons.cascade50</ApplicationId>
+    <ApplicationTitle>Cascade 50</ApplicationTitle>
+    <ApplicationVersion>$(BuildNumber)</ApplicationVersion>
+    <ApplicationDisplayVersion>$(Version)</ApplicationDisplayVersion>
+    <AssemblyName>Cascade50</AssemblyName>
+    <RootNamespace>Cascade50.Android</RootNamespace>
+  </PropertyGroup>
+  <!-- Play upload key, if present. The password is never stored: pass it in CASCADE50_KEYSTORE_PASS. -->
+  <PropertyGroup Condition="'$(Configuration)' == 'Release' And Exists('$(HOME)/keys/cascade50-upload.jks')">
+    <AndroidKeyStore>true</AndroidKeyStore>
+    <AndroidSigningKeyStore>$(HOME)/keys/cascade50-upload.jks</AndroidSigningKeyStore>
+    <AndroidSigningKeyAlias>cascade50</AndroidSigningKeyAlias>
+    <AndroidSigningStorePass>env:CASCADE50_KEYSTORE_PASS</AndroidSigningStorePass>
+    <AndroidSigningKeyPass>env:CASCADE50_KEYSTORE_PASS</AndroidSigningKeyPass>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cascade50.Core\Cascade50.Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MonoGame.Framework.Android" Version="$(MonoGameVersion)" />
+  </ItemGroup>
+</Project>
