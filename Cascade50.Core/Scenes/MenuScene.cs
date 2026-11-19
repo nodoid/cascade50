@@ -26,6 +26,7 @@ public sealed class MenuScene : Scene
     private bool _dragging;
     private float _dragStartScroll;
     private bool _options;
+    private bool _appMenu;
 
     public MenuScene(Cascade50Game app) : base(app)
     {
@@ -99,7 +100,6 @@ public sealed class MenuScene : Scene
             UpdateOptions();
             return;
         }
-
         // Tabs.
         float tx = 160;
         for (int i = 0; i < Tabs.Length; i++)
@@ -125,6 +125,23 @@ public sealed class MenuScene : Scene
         if (ui.Button(new RectF(Screen.Width - 70, 14, 62, 24), "OPTIONS", Keys.O, true, Pal.Panel, false, 1.25f))
         {
             _options = true;
+            _appMenu = false;
+            return;
+        }
+
+        // The app menu (opened from the app name in the header) is modal over the playfield.
+        if (_appMenu)
+        {
+            UpdateAppMenu();
+            return;
+        }
+
+        // Tapping the app name in the header opens its menu (Quit).
+        if (App.Platform.CanQuit && In.PointerReleased &&
+            Vector2.Distance(In.Pointer, In.PointerStart) < 10 && AppNameRect.Contains(In.PointerStart))
+        {
+            _appMenu = true;
+            App.Sound.Play(Sfx.Click);
             return;
         }
 
@@ -253,7 +270,29 @@ public sealed class MenuScene : Scene
             App.Quit();
     }
 
-    private static RectF OptionsRect => RectF.Centered(320, 190, 340, 260);
+    private static RectF OptionsRect => RectF.Centered(320, 180, 340, 300);
+
+    /// <summary>The app name (logo) in the header: tap it to open the app menu.</summary>
+    private static RectF AppNameRect => new(4, 4, 142, 44);
+
+    private static RectF AppMenuRect => new(10, 46, 116, 32);
+
+    private void UpdateAppMenu()
+    {
+        var ui = App.Ui;
+        if (ui.Button(AppMenuRect, "QUIT", Keys.None, true, Pal.Darken(Pal.Red, 0.4f), false, 1.5f, "app-menu-quit"))
+        {
+            App.Quit();
+            return;
+        }
+        if (In.BackPressed ||
+            (In.PointerReleased && Vector2.Distance(In.Pointer, In.PointerStart) < 10 && AppNameRect.Contains(In.PointerStart)) ||
+            (In.PointerPressed && !AppMenuRect.Contains(In.Pointer) && !AppNameRect.Contains(In.Pointer)))
+            _appMenu = false;
+    }
+
+    private static string Version => typeof(MenuScene).Assembly.GetName().Version?.ToString(3) ?? "1.0.0";
+
 
     public override void Draw(Gfx g)
     {
@@ -286,7 +325,14 @@ public sealed class MenuScene : Scene
         }
 
         if (!_options)
+        {
+            if (_appMenu)
+            {
+                var m = AppMenuRect;
+                g.Panel(new RectF(m.X - 4, m.Y - 4, m.W + 8, m.H + 8), Pal.Panel, Pal.Accent, 8);
+            }
             App.Ui.Draw(g);
+        }
         else
         {
             DrawOptions(g);
@@ -300,12 +346,16 @@ public sealed class MenuScene : Scene
         g.Panel(r, Pal.Panel, Pal.Accent, 12);
         g.TextShadow("OPTIONS", r.CenterX, r.Y + 16, 2.5f, Pal.Accent, Align.Center);
         App.Ui.Draw(g);
+
+        // About the app: its name, version, author, copyright and how much of it has been played.
         float y = r.Y + 134;
-        g.Text(Cascade50Game.Name + "  V" + typeof(MenuScene).Assembly.GetName().Version?.ToString(3), r.CenterX, y, 1.25f, Pal.White, Align.Center);
-        g.Text(Cascade50Game.Credit, r.CenterX, y + 16, 1.25f, Pal.Cyan, Align.Center);
-        g.Text(Cascade50Game.BasedOn, r.CenterX, y + 32, 1f, Pal.LightGrey, Align.Center);
+        g.TextShadow(Cascade50Game.Name, r.CenterX, y, 2f, Pal.White, Align.Center);
+        g.Text("VERSION " + Version, r.CenterX, y + 24, 1.25f, Pal.Yellow, Align.Center);
+        g.Text("BY " + Cascade50Game.Author, r.CenterX, y + 40, 1.25f, Pal.Cyan, Align.Center);
+        g.Text(Cascade50Game.BasedOn, r.CenterX, y + 56, 1f, Pal.LightGrey, Align.Center);
+        g.Text("COPYRIGHT " + OricFont.Copyright + " 2026 " + Cascade50Game.Author, r.CenterX, y + 70, 1.25f, Pal.White, Align.Center);
         int played = App.Profile.GamesPlayed();
-        g.Text($"GAMES TRIED: {played} OF {GameCatalog.Count}", r.CenterX, y + 50, 1.25f, Pal.Yellow, Align.Center);
+        g.Text($"GAMES TRIED: {played} OF {GameCatalog.Count}", r.CenterX, y + 90, 1.25f, Pal.Yellow, Align.Center);
     }
 
     /// <summary>A menu tile: animated picture, number, title and best score.</summary>

@@ -21,7 +21,9 @@ public class Cascade50Game : Game
 {
     public const int TicksPerSecond = 60;
     public const string Name = "CASCADE 50";
+    public const string DisplayName = "Cascade 50";
     public const string Credit = "BY PFJ";
+    public const string Author = "PAUL F JOHNSON";
     public const string BasedOn = "BASED ON THE CASCADE GAMES ORIGINALS";
 
     private readonly GraphicsDeviceManager _graphics;
@@ -95,7 +97,9 @@ public class Cascade50Game : Game
 
     protected override void Initialize()
     {
-        Window.Title = "Cascade 50";
+        Window.Title = DisplayName;
+        if (OperatingSystem.IsMacOS())
+            MacMenu.Install(DisplayName);
         if (Capture != null || Soak != null)
         {
             IsFixedTimeStep = false;
